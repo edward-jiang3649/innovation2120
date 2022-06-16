@@ -1,50 +1,44 @@
 from flask import Flask
+
 app = Flask(__name__)
+
 
 @app.route("/")
 def hello():
     return "My names Eddy!"
-    
+
+
 # if __name__== "__main__":
 
-    
-    # app.run ()
+# app.run ()
+
+from flask import Flask
+
+#@app.route("/")
+#def home():
+#    return"Hello, Flask from Eddy!"
+
+import ghhops_server as hs
+import rhino3dm
+# refister hos app as middleware
+app = Flask(__name__)
+hops = hs.Hops(app)
 
 
+@hops.component(
+    "/pointat",
+    name="/pointAt",
+    description="Get pointalong curve",
+    icon="examples/pointat.png",
+    inputs=[
+        hs.HopsCurve("Curve", "C", "Curve to evaluate"),
+        hs.HopsNumber("t", "t", "Parameter on curve to evaulate", default=2.0),
+    ],
+    outputs=[hs.HopsPoint("P", "P", "Point on curve at t")],
+)
+def pointat(curve: rhino3dm.Curve, t):
+    return curve.PointAt(t)
 
 
-
-
-# from flask import Flask
-
-# #@app.route("/")
-# #def home():
-# #    return"Hello, Flask from Eddy!"
-
-# import ghhops_server as hs
-# import rhino3dm
-# # refister hos app as middleware
-# app = Flask(__name__)
-# hops = hs. Hops(app)
-
-
-# @hops.component(
-#     "/pointat",
-#     name="/pointAt",
-#     description="Get pointalong curve",
-#     icon="examples/pointat.png",
-#     inputs=[
-#         hs.HopsCurve("Curve", "C", "Curve to evaluate"),
-#         hs.HopsNumber("t", "t", "Parameter on curve to evaulate", default=2.0),
-#     ],
-#     outputs=[
-#         hs.HopsPoint("P", "P", "Point on curve at t")
-#     ],
-
-# )
-# def pointat(curve: rhino3dm.Curve, t):
-#     return curve.PointAt(t)
-
-
-# if __name__ == "__main__":
-#     app.run()
+if __name__ == "__main__":
+    app.run()
