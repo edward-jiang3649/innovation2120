@@ -1,44 +1,52 @@
-from flask import Flask
+from flask import Flask, request
 
 app = Flask(__name__)
 
 
 @app.route("/")
 def hello():
-    return "My names Eddy!"
+    return "Eddy!"
 
 
-# if __name__== "__main__":
+@app.route('/np_multiplyMatrix')
+def np_multiplyMatrix():
+    print("HELLO")
+    try:
+        import numpy as np
+        import pandas as pd
+        args = request.args
+        variables = dict(args)
 
-# app.run ()
+        #deserialisation
+        variables["m1"] = variables["m1"].split(",")
+        variables["m2"] = variables["m2"].split(",")
 
-from flask import Flask
+        variables["m1"] = list(map(lambda x: float(x), variables["m1"]))
+        variables["m2"] = list(map(lambda x: float(x), variables["m2"]))
 
-#@app.route("/")
-#def home():
-#    return"Hello, Flask from Eddy!"
+        matrix1 = np.array(variables["m1"]).reshape(
+            (int(variables["m1_y"]), int(variables["m1_x"])))
+        matrix2 = np.array(variables["m2"]).reshape(
+            (int(variables["m2_y"]), int(variables["m2_x"])))
+        print(matrix1)
+        print(matrix2)
 
-import ghhops_server as hs
-import rhino3dm
-# refister hos app as middleware
-app = Flask(__name__)
-hops = hs.Hops(app)
+        #actual function
+        result = np.add(matrix1, matrix2)
 
+        #serialisation
 
-@hops.component(
-    "/pointat",
-    name="/pointAt",
-    description="Get pointalong curve",
-    icon="examples/pointat.png",
-    inputs=[
-        hs.HopsCurve("Curve", "C", "Curve to evaluate"),
-        hs.HopsNumber("t", "t", "Parameter on curve to evaulate", default=2.0),
-    ],
-    outputs=[hs.HopsPoint("P", "P", "Point on curve at t")],
-)
-def pointat(curve: rhino3dm.Curve, t):
-    return curve.PointAt(t)
+        data = pd.DataFrame(result)
+        data.to_csv()
+
+        return str(data)
+    except Exception as e:
+        return str(e)
 
 
-if __name__ == "__main__":
+def main():
     app.run()
+
+
+if __name__ == '__main__':
+    main()
