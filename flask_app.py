@@ -1,52 +1,23 @@
-from flask import Flask, request
+from flask import Flask
+import ghhops_server as hs
 
+# register hops app as middleware
 app = Flask(__name__)
+hops = hs.Hops(app)
 
 
-@app.route("/")
-def hello():
-    return "Eddy!"
+@hops.component("/pointat",
+                name="PointAt",
+                description="Get point along curve",
+                icon="examples/pointat.png",
+                inputs=[
+                    hs.HopsCurve("Curve", "C", "Curve to evaluate"),
+                    hs.HopsNumber("t", "t", "Parameter on Curve to evaluate"),
+                ],
+                outputs=[hs.HopsPoint("P", "P", "Point on curve at t")])
+def pointat(curve, t):
+    return curve.PointAt(t)
 
 
-@app.route('/np_multiplyMatrix')
-def np_multiplyMatrix():
-    print("HELLO")
-    try:
-        import numpy as np
-        import pandas as pd
-        args = request.args
-        variables = dict(args)
-
-        #deserialisation
-        variables["m1"] = variables["m1"].split(",")
-        variables["m2"] = variables["m2"].split(",")
-
-        variables["m1"] = list(map(lambda x: float(x), variables["m1"]))
-        variables["m2"] = list(map(lambda x: float(x), variables["m2"]))
-
-        matrix1 = np.array(variables["m1"]).reshape(
-            (int(variables["m1_y"]), int(variables["m1_x"])))
-        matrix2 = np.array(variables["m2"]).reshape(
-            (int(variables["m2_y"]), int(variables["m2_x"])))
-        print(matrix1)
-        print(matrix2)
-
-        #actual function
-        result = np.add(matrix1, matrix2)
-
-        #serialisation
-
-        data = pd.DataFrame(result)
-        data.to_csv()
-
-        return str(data)
-    except Exception as e:
-        return str(e)
-
-
-def main():
+if __name__ == "__main__":
     app.run()
-
-
-if __name__ == '__main__':
-    main()
