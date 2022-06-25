@@ -48,6 +48,8 @@ def add(a: float, b: float):
                 outputs=[hs.HopsPoint("P", "P", "Point on curve at t")])
 def pointat(curve: rhino3dm.Curve, t=0.0):
     return curve.PointAt(t)
+    #can * it to multiply the number of places the point moves
+    #you can also set "t" to a value e.g. t=0
 
 
 @hops.component("/srf4pt",
