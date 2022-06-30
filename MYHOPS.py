@@ -22,6 +22,7 @@ hops = hs.Hops(app=rhinoinside)
     inputs=[
         hs.HopsNumber("A", "A", "First number"),
         hs.HopsNumber("B", "B", "Second number"),
+        hs.Hopsin()
     ],
     outputs=[hs.HopsNumber("Sum", "S", "A + B")],
 )
