@@ -31,7 +31,7 @@ buildings.head()
 buildings.columns
 
 #points of interest
-tags{'amenity':'restaurant'}
+tags ={'amenity':'restaurant'}
 
 restaurants = ox.geometries_from_place(place_name, tags)
 
